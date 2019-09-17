@@ -6,6 +6,7 @@ var path = require("path");
 var fs   = require("fs");
 var util = require("util");
 var exec = require("child_process").exec;
+var endOfLine = require('os').EOL;
 
 function PDFImage(pdfFilePath, options) {
   if (!options) options = {};
@@ -30,9 +31,11 @@ PDFImage.prototype = {
   },
   parseGetInfoCommandOutput: function (output) {
     var info = {};
-    output.split("\n").forEach(function (line) {
-      if (line.match(/^(.*?):[ \t]*(.*)$/)) {
-        info[RegExp.$1] = RegExp.$2;
+    output.split(endOfLine).forEach(function (line) {
+      var matches = line.match(/^(.*?):[ \t]*(.*)$/);
+
+      if(matches!=null && matches.length>=3){
+        info[matches[1]] = matches[2];
       }
     });
     return info;
